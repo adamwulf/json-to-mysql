@@ -5,6 +5,9 @@
  */
 class JSONtoMYSQL{
 
+	public static $UPDATE = 'update';
+	public static $INSERT = 'insert';
+
 
 	protected $mysql;
 
@@ -30,7 +33,7 @@ class JSONtoMYSQL{
 	public function save($json_obj, $tablename){
 		$table = $this->getTableFor($tablename);
 		$table->validateTableFor($json_obj);
-		$table->save($json_obj);
+		return $table->save($json_obj);
 	}
 	
 	/**

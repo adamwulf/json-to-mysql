@@ -35,12 +35,15 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			if($res->num_rows()){
 				// already exists with this primary key value, update it
 				$this->update($json_obj);
+				return JSONtoMYSQL::$UPDATE;
 			}else{
 				// doesn't exist yet, insert
 				$this->insert($json_obj);
+				return JSONtoMYSQL::$INSERT;
 			}
 		}else{
 			$this->insert($json_obj);
+			return JSONtoMYSQL::$INSERT;
 		}
 	}
 	
@@ -97,7 +100,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				echo "need to handle object subdata\n";
 			}else{
 				$colname = $this->getColumnNameForKey($key);
-				if(strlen($where)){
+				if(strlen($set)){
 					$set .= ", ";
 				}
 				$set .= "`" . $colname . "`";

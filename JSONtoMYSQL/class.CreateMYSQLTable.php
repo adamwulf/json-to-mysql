@@ -30,7 +30,7 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 				echo "need to handle array subdata\n";
 			}else if(is_object($value)){
 				echo "need to handle object subdata\n";
-			}else{
+			}else if($key != $this->primary){
 				$colname = $this->getColumnNameForKey($key);
 				$type = $this->getMysqlTypeForValue($value);
 				$colstr .= "  `" . $colname . "` " . $type . " NOT NULL,";
