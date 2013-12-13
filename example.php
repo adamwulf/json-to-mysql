@@ -4,12 +4,7 @@
  * Copyright Adam Wulf 2013
  */
 
-define("ROOT", dirname(__FILE__) . "/");
-define("DATABASE_HOST", "localhost");
-define("DATABASE_NAME", "internet_metrics");
-define("DATABASE_USER", "internet_metrics");
-define("DATABASE_PASS", "WFw7ZUowHrq3Vz");
-
+include("config.php");
 include("include.classloader.php");
 
 $classLoader->addToClasspath(ROOT);
