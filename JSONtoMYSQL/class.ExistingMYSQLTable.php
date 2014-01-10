@@ -58,9 +58,9 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		
 		foreach($json_obj as $key => $value){
 			if(is_array($value)){
-				echo "need to handle array subdata\n";
+/* 				echo "need to handle array subdata\n"; */
 			}else if(is_object($value)){
-				echo "need to handle object subdata\n";
+/* 				echo "need to handle object subdata\n"; */
 			}else{
 				$colname = $this->getColumnNameForKey($key);
 				if(strlen($where)){
@@ -95,9 +95,9 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				continue;
 			}
 			if(is_array($value)){
-				echo "need to handle array subdata\n";
+/* 				echo "need to handle array subdata\n"; */
 			}else if(is_object($value)){
-				echo "need to handle object subdata\n";
+/* 				echo "need to handle object subdata\n"; */
 			}else{
 				$colname = $this->getColumnNameForKey($key);
 				if(strlen($set)){
@@ -126,9 +126,9 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		
 		foreach($json_obj as $key => $value){
 			if(is_array($value)){
-				echo "need to handle array subdata\n";
+/* 				echo "need to handle array subdata\n"; */
 			}else if(is_object($value)){
-				echo "need to handle object subdata\n";
+/* 				echo "need to handle object subdata\n"; */
 			}else{
 				$colname = $this->getColumnNameForKey($key);
 				if(strlen($fields)){
