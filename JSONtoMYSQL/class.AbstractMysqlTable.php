@@ -45,7 +45,7 @@ abstract class AbstractMysqlTable{
 	 * from any input string
 	 */
 	protected function getColumnNameForKey($key){
-		return preg_replace('/[^a-z0-9_]/', '', $key);
+		return preg_replace('/[^a-zA-Z0-9_]/', '', $key);
 	}
 
 	/**

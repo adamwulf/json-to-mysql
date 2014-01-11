@@ -49,7 +49,15 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 		parent::validateTableFor($data);
 	}
 	
-	
+	/**
+	 * returns a MysqlResult for a SELECT query
+	 * that tries to find all values in the table
+	 * that match the input json object
+	 */
+	public function find($json_obj){
+		$sql = "SELECT 0 LIMIT 0";
+		return $this->mysql->query($sql);
+	}
 
 }
 

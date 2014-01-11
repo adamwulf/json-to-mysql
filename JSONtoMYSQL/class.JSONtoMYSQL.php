@@ -31,7 +31,7 @@ class JSONtoMYSQL{
 	 * flattening sub object into columns
 	 */
 	public function save($json_obj, $tablename){
-		$table = $this->getTableFor($tablename);
+		$table = $this->table($tablename);
 		$table->validateTableFor($json_obj);
 		return $table->save($json_obj);
 	}
@@ -40,7 +40,7 @@ class JSONtoMYSQL{
 	 * create or return a table for the input
 	 * tablename
 	 */
-	protected function getTableFor($tablename){
+	public function table($tablename){
 		if($this->tableExistsHuh($tablename)){
 			return new ExistingMYSQLTable($this->mysql, $tablename);
 		}else{

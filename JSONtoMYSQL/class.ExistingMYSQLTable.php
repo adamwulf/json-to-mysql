@@ -53,7 +53,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * that tries to find all values in the table
 	 * that match the input json object
 	 */
-	protected function find($json_obj){
+	public function find($json_obj){
 		$where = "";
 		
 		foreach($json_obj as $key => $value){
@@ -78,6 +78,34 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		return $this->mysql->query($sql);
 	}
 	
+	/*
+	 * finds the rows just like the find() method
+	 * and then deletes all of them
+	 */
+	public function delete($json_obj){
+		$where = "";
+		
+		foreach($json_obj as $key => $value){
+			if(is_array($value)){
+/* 				echo "need to handle array subdata\n"; */
+			}else if(is_object($value)){
+/* 				echo "need to handle object subdata\n"; */
+			}else{
+				$colname = $this->getColumnNameForKey($key);
+				if(strlen($where)){
+					$where .= " AND ";
+				}
+				$where .= "`" . $colname . "`";
+				if($this->getMysqlTypeForValue($value) == "TEXT"){
+					$where .= " LIKE '" . addslashes($value) . "'";
+				}else{
+					$where .= " = '" . addslashes($value) . "'";
+				}
+			}
+		}
+		$sql = "DELETE FROM `" . addslashes($this->tablename) . "` WHERE " . $where;
+		return $this->mysql->query($sql);
+	}
 	
 	/**
 	 * will update a row in the database for
