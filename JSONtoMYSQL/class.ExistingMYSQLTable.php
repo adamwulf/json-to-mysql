@@ -15,22 +15,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 
 	public function __construct($mysql, $tablename, $primary="id"){
 		parent::__construct($mysql, $tablename);
-		
-		// pull the primary column from the database
-		$sql = "show index from " . addslashes($this->tablename) . " where Key_name = 'PRIMARY' ;";
-		$result = $this->mysql->query($sql);
-		$arr = $result->fetch_array();
-		$this->primary = $arr["Column_name"];
-		
-		
-		// fetch all columns and types
 		$this->fields = array();
-		$sql = "SHOW FIELDS FROM  `" . addslashes($this->tablename) . "`";
-		$result = $this->mysql->query($sql);
-		while($row = $result->fetch_array()){
-			$field = array("name" => $row["Field"], "type" => $row["Type"]);
-			$this->fields[] = $field;
-		}
 	}
 
 
@@ -39,6 +24,24 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * to ease future operations
 	 */
 	public function validateTableFor($data){
+	
+		if(!count($this->fields)){
+			// pull the primary column from the database
+			$sql = "show index from " . addslashes($this->tablename) . " where Key_name = 'PRIMARY' ;";
+			$result = $this->mysql->query($sql);
+			$arr = $result->fetch_array();
+			$this->primary = $arr["Column_name"];
+			
+			// fetch all columns and types
+			$this->fields = array();
+			$sql = "SHOW FIELDS FROM  `" . addslashes($this->tablename) . "`";
+			$result = $this->mysql->query($sql);
+			while($row = $result->fetch_array()){
+				$field = array("name" => $row["Field"], "type" => $row["Type"]);
+				$this->fields[] = $field;
+			}
+		}
+	
 		$missing = array();
 		foreach($data as $key => $value){
 			if(!is_array($value) && !is_object($value)){
@@ -59,6 +62,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			foreach($missing as $field){
 				$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD " . addslashes($field["name"]) . " " . addslashes($field["type"]) . ";";
 				$result = $this->mysql->query($sql);
+				$this->fields[] = $field;
 			}
 		}
 	}
@@ -71,8 +75,16 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 */
 	public function save($json_obj){
 		$primary = $this->primary;
-		if(isset($json_obj->$primary)){
-			$res = $this->find(array($primary => $json_obj->$primary));
+		
+		$primary_value = false;
+		if(is_array($json_obj) && isset($json_obj[$primary])){
+			$primary_value = $json_obj[$primary];
+		}else if(is_object($json_obj) && isset($json_obj->$primary)){
+			$primary_value = $json_obj->$primary;
+		}
+		
+		if($primary_value){
+			$res = $this->find(array($primary => $primary_value));
 			if($res->num_rows()){
 				// already exists with this primary key value, update it
 				$this->update($json_obj);
