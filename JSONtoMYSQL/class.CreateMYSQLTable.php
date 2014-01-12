@@ -59,6 +59,11 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 		return $this->mysql->query($sql);
 	}
 
+	public function delete($json_obj){
+		// noop
+		return false;
+	}
+
 }
 
 ?>
