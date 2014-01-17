@@ -106,7 +106,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * that tries to find all values in the table
 	 * that match the input json object
 	 */
-	public function find($json_obj){
+	public function find($json_obj = array()){
 		$where = "";
 		
 		foreach($json_obj as $key => $value){
@@ -127,7 +127,10 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				}
 			}
 		}
-		$sql = "SELECT * FROM `" . addslashes($this->tablename) . "` WHERE " . $where;
+		$sql = "SELECT * FROM `" . addslashes($this->tablename);
+		if($where){
+			$sql .= "` WHERE " . $where;
+		}
 		return $this->mysql->query($sql);
 	}
 	
