@@ -57,6 +57,10 @@ class JSONtoMYSQL{
 		$result = $this->mysql->query($sql);
 		return $result->num_rows() > 0;
 	}
+	
+	public function mysql(){
+		return $this->mysql;
+	}
 }
 
 
