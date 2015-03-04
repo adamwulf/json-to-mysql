@@ -47,7 +47,7 @@ class MySQLConn{
 			mysql_query("SET NAMES 'utf8'", $this->_mysqli_link);
 		}
 		if($this->_mysqli_link === false){
-			throw new DatabaseException("could not connect to MySQL");
+			throw new Exception("could not connect to MySQL");
 		};
 
 		if($this->_query_cache->get($sql)){
@@ -96,7 +96,7 @@ class MySQLConn{
 			
 			if(mysql_error($this->_mysqli_link)){
 				if($verbose) echo "mysqli_error: " . mysql_error($this->_mysqli_link) . "<br>";
-				throw new DatabaseException(mysql_error($this->_mysqli_link));
+				throw new Exception(mysql_error($this->_mysqli_link));
 			}
 			if(strpos($sql, "SELECT") === 0){
 				if($verbose) echo ": select: $sql<br><br>";
