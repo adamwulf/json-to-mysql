@@ -60,7 +60,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		}
 		if(count($missing)){
 			foreach($missing as $field){
-				$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD " . addslashes($field["name"]) . " " . addslashes($field["type"]) . ";";
+				$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD `" . addslashes($field["name"]) . "` " . addslashes($field["type"]) . ";";
 				$result = $this->mysql->query($sql);
 				$this->fields[] = $field;
 			}
@@ -74,6 +74,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * insert a new row
 	 */
 	public function save($json_obj){
+		$this->validateTableFor($json_obj);
 		$primary = $this->primary;
 		
 		$primary_value = false;
@@ -106,12 +107,24 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * that tries to find all values in the table
 	 * that match the input json object
 	 */
-	public function find($json_obj = array()){
+	public function find($json_obj = array(), $ops=false){
+		$this->validateTableFor($json_obj);
 		$where = "";
-		
 		foreach($json_obj as $key => $value){
 			if(is_array($value)){
-/* 				echo "need to handle array subdata\n"; */
+				$colname = $this->getColumnNameForKey($key);
+				if(strlen($where)){
+					$where .= " AND ";
+				}
+				$where .= "`" . $colname . "`";
+				$op = ($ops && $ops[$key]) ? addslashes($ops[$key]) : "IN";
+				$where .= " $op (";
+				$idx = 0;
+				foreach($value as $val){
+					$where .= ($idx ? "," : "") . "'" . addslashes($value) . "'";
+					$idx++;
+				}
+				$where .= ") ";
 			}else if(is_object($value)){
 /* 				echo "need to handle object subdata\n"; */
 			}else{
@@ -121,9 +134,11 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				}
 				$where .= "`" . $colname . "`";
 				if($this->getMysqlTypeForValue($value) == "TEXT"){
-					$where .= " LIKE '" . addslashes($value) . "'";
+					$op = ($ops && $ops[$key]) ? addslashes($ops[$key]) : "LIKE";
+					$where .= " $op '" . addslashes($value) . "'";
 				}else{
-					$where .= " = '" . addslashes($value) . "'";
+					$op = ($ops && $ops[$key]) ? addslashes($ops[$key]) : "=";
+					$where .= " $op '" . addslashes($value) . "'";
 				}
 			}
 		}
@@ -131,6 +146,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		if($where){
 			$sql .= "` WHERE " . $where;
 		}
+		
 		return $this->mysql->query($sql);
 	}
 	
@@ -237,6 +253,14 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * in the table, or false otherwise
 	 */
 	protected function columnExistsInTableHuh($columnname){
+		if(count($this->fields)){
+			foreach($this->fields as $field){
+				if($field["name"] == $columnname){
+					return true;
+				}
+			}
+			return false;
+		}
 		$sql = "SHOW COLUMNS FROM `" . addslashes($this->tablename) . "` LIKE '" . addslashes($columnname) . "'";
 		$result = $this->mysql->query($sql);
 		return $result->num_rows() > 0;
