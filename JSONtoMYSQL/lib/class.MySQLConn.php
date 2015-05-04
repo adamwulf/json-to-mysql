@@ -42,23 +42,22 @@ class MySQLConn{
 	function query($sql, $verbose=false){
 		$sql = trim($sql);
 		if($this->_mysqli_link === false){
-			$this->_mysqli_link = mysql_connect($this->host, $this->user, $this->pass);
-			mysql_select_db($this->database, $this->_mysqli_link);
-			mysql_query("SET NAMES 'utf8'", $this->_mysqli_link);
+                    $this->_mysqli_link = mysqli_connect($this->host, $this->user, $this->pass, $this->database);
+                    mysqli_set_charset($this->_mysqli_link, "utf8");
 		}
 		if($this->_mysqli_link === false){
 			throw new Exception("could not connect to MySQL");
 		};
 
 		if($this->_query_cache->get($sql)){
-			if($verbose)echo "found in cache<br>";
+			if($verbose)echo "found in cache<br/>";
 			$result = $this->_query_cache->get($sql);
-			if(mysql_num_rows($result)){
+			if(mysqli_num_rows($result)){
 				if($verbose) echo ": seeking to 0";
-				mysql_data_seek($result, 0);
+				mysqli_data_seek($result, 0);
 			}
 			$ret = new MySQLResult($this->_mysqli_link, $result);
-			if($verbose) echo "<br>";
+			if($verbose) echo "<br/>";
 		}else{
 			if($verbose) echo "not in cache";
 			$this->_query_count++;
@@ -68,16 +67,16 @@ class MySQLConn{
 			 * i'm running it before every query. I can probably optimize this
 			 * to run once per connection, but I need to do some thorough testing...
 			 *
-			 * http://dev.mysql.com/doc/refman/5.0/en/charset-connection.html
+			 * http://dev.mysql.com/doc/refman/5.6/en/charset-connection.html
 			 */
 			if(is_object($this->logger)){
 				$this->logger->log($this, ALogger::$LOW, $sql);
 			}
 			
-			mysql_query("SET NAMES 'utf8'", $this->_mysqli_link);
+                        mysqli_set_charset($this->_mysqli_link, "utf8");
 			$timer = new Timer();
 			$timer->start();
-			$result = mysql_query($sql, $this->_mysqli_link);
+			$result = mysqli_query($this->_mysqli_link $sql);
 			$ret = new MySQLResult($this->_mysqli_link, $result);
 			$timer->stop();
 			$time = $timer->read();
@@ -94,9 +93,9 @@ class MySQLConn{
 				}
 			}
 			
-			if(mysql_error($this->_mysqli_link)){
-				if($verbose) echo "mysqli_error: " . mysql_error($this->_mysqli_link) . "<br>";
-				throw new Exception(mysql_error($this->_mysqli_link));
+			if(mysqli_error($this->_mysqli_link)){
+				if($verbose) echo "mysqli_error: " . mysqli_error($this->_mysqli_link) . "<br>";
+				throw new Exception(mysqli_error($this->_mysqli_link));
 			}
 			if(strpos($sql, "SELECT") === 0){
 				if($verbose) echo ": select: $sql<br><br>";
@@ -122,7 +121,7 @@ class MySQLConn{
 	
 	function close(){
 		if(!is_bool($this->_mysqli_link)){
-			return @mysql_close($this->_mysqli_link);
+			return @mysqli_close($this->_mysqli_link);
 		}else{
 			return false;
 		}
