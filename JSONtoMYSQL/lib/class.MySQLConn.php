@@ -76,7 +76,7 @@ class MySQLConn{
                         mysqli_set_charset($this->_mysqli_link, "utf8");
 			$timer = new Timer();
 			$timer->start();
-			$result = mysqli_query($this->_mysqli_link $sql);
+			$result = mysqli_query($this->_mysqli_link, $sql);
 			$ret = new MySQLResult($this->_mysqli_link, $result);
 			$timer->stop();
 			$time = $timer->read();
