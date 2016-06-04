@@ -145,6 +145,8 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		$sql = "SELECT * FROM `" . addslashes($this->tablename);
 		if($where){
 			$sql .= "` WHERE " . $where;
+		}else{
+			$sql .= "`";
 		}
 		
 		return $this->mysql->query($sql);
