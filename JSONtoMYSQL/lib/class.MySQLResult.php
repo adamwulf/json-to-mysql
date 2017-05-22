@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Licensed under Creative Commons 3.0 Attribution
  * Copyright Adam Wulf 2013

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * the class represents a table that already
  * exists in the Mysql database

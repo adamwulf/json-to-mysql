@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * this will create the table to match the input
  * json object, and then will defer to the

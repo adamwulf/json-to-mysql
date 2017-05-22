@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * a class for managing a MySQL connection
  * and caching certain queries
