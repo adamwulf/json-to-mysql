@@ -40,6 +40,10 @@ abstract class AbstractMysqlTable{
 	abstract public function save($json_data);
 
 
+	abstract public function find($json_obj = array(), $ops=false);
+
+	abstract public function delete($json_obj);
+
 	/**
 	 * helper method to make a mysql safe column name
 	 * from any input string
