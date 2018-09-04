@@ -88,16 +88,13 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			$res = $this->find(array($primary => $primary_value));
 			if($res->num_rows()){
 				// already exists with this primary key value, update it
-				$this->update($json_obj);
-				return JSONtoMYSQL::$UPDATE;
+				return $this->update($json_obj);
 			}else{
 				// doesn't exist yet, insert
-				$this->insert($json_obj);
-				return JSONtoMYSQL::$INSERT;
+				return $this->insert($json_obj);
 			}
 		}else{
-			$this->insert($json_obj);
-			return JSONtoMYSQL::$INSERT;
+			return $this->insert($json_obj);
 		}
 	}
 	
@@ -177,8 +174,10 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				}
 			}
 		}
-		$sql = "DELETE FROM `" . addslashes($this->tablename) . "` WHERE " . $where;
-		return $this->mysql->query($sql);
+		if(strlen($where)){
+			$sql = "DELETE FROM `" . addslashes($this->tablename) . "` WHERE " . $where;
+			return $this->mysql->query($sql);
+		}
 	}
 	
 	/**
@@ -213,7 +212,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			$sql = "UPDATE `" . addslashes($this->tablename) . "` SET "
 				 . $set . " WHERE `" . $this->primary . "`='" . addslashes($primary_val) . "';";
 			
-			$result = $this->mysql->query($sql);
+			return $this->mysql->query($sql);
 		}
 	}
 	
@@ -246,7 +245,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			$sql = "INSERT INTO `" . addslashes($this->tablename) . "` "
 				 . "(" . $fields . ") VALUES (" . $values . ")";
 			
-			$result = $this->mysql->query($sql);
+			return $this->mysql->query($sql);
 		}
 	}
 
