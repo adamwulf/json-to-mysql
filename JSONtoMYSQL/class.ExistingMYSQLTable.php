@@ -185,7 +185,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * the input object by comparing its value
 	 * for the primary column name
 	 */
-	protected function update($json_obj){
+	public function update($json_obj){
 		$set = "";
 		
 		$primary_val = 0;
@@ -221,7 +221,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * to the table with all of the values
 	 * of the input json object
 	 */
-	protected function insert($json_obj){
+	public function insert($json_obj){
 		$fields = "";
 		$values = "";
 		

@@ -39,6 +39,9 @@ abstract class AbstractMysqlTable{
 	 */
 	abstract public function save($json_data);
 
+	abstract public function update($json_data);
+
+	abstract public function insert($json_data);
 
 	abstract public function find($json_obj = array(), $ops=false);
 
