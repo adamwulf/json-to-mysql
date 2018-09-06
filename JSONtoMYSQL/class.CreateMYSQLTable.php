@@ -9,12 +9,8 @@
  */
 class CreateMYSQLTable extends ExistingMYSQLTable{
 
-
-	private $primary;
-
 	public function __construct($mysql, $tablename, $primary="id"){
-		parent::__construct($mysql, $tablename);
-		$this->primary = $this->getColumnNameForKey($primary);
+		parent::__construct($mysql, $tablename, $primary);
 	}
 
 	/**

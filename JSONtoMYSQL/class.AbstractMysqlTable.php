@@ -12,14 +12,20 @@ abstract class AbstractMysqlTable{
 	
 	protected $mysql;
 	
+	// a cache of the primary index column name
+	protected $primary;
+
 	/**
 	 * initialize with the table name and a connection
 	 * to the database
 	 */
-	public function __construct($mysql, $tablename){
+	public function __construct($mysql, $tablename, $primary){
 		$this->mysql = $mysql;
 		$this->tablename = $tablename;
+		$this->primary = $this->getColumnNameForKey($primary);
 	}
+
+	abstract public function primaryColumn();
 
 	/**
 	 * this method should be called to make sure that

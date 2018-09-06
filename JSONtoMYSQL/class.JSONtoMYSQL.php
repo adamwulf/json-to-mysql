@@ -10,10 +10,12 @@ class JSONtoMYSQL{
 
 
 	protected $mysql;
+	protected $table_cache;
 
 
 	public function __construct($mysql){
 		$this->mysql = $mysql;
+		$this->table_cache = [];
 	}
 
 
@@ -43,8 +45,11 @@ class JSONtoMYSQL{
 	public function table($tablename){
 		if($this->tableExistsHuh($tablename)){
 			return new ExistingMYSQLTable($this->mysql, $tablename);
-		}else{
-			return new CreateMYSQLTable($this->mysql, $tablename);
+		}else if(isset($this->table_cache[$tablename])){
+			return $this->table_cache[$tablename];
+		} else {
+			$this->table_cache[$tablename] = new CreateMYSQLTable($this->mysql, $tablename);
+			return $this->table_cache[$tablename];
 		}
 	}
 	

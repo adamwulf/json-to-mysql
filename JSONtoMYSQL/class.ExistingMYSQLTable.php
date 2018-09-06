@@ -8,14 +8,15 @@
  */
 class ExistingMYSQLTable extends AbstractMysqlTable{
 
-	// a cache of the primary index column name
-	private $primary;
-
 	private $fields;
 
 	public function __construct($mysql, $tablename, $primary="id"){
-		parent::__construct($mysql, $tablename);
+		parent::__construct($mysql, $tablename, $primary);
 		$this->fields = array();
+	}
+	
+	public function primaryColumn(){
+		return $this->primary;
 	}
 
 
@@ -186,6 +187,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * for the primary column name
 	 */
 	public function update($json_obj){
+		$this->validateTableFor($json_obj);
 		$set = "";
 		
 		$primary_val = 0;
@@ -222,6 +224,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * of the input json object
 	 */
 	public function insert($json_obj){
+		$this->validateTableFor($json_obj);
 		$fields = "";
 		$values = "";
 		
