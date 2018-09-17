@@ -105,7 +105,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * that tries to find all values in the table
 	 * that match the input json object
 	 */
-	public function find($json_obj = array(), $ops=false){
+	public function find($json_obj = array(), $ops=false, $orders=false){
 		$this->validateTableFor($json_obj);
 		$where = "";
 		foreach($json_obj as $key => $value){
@@ -145,6 +145,18 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			$sql .= "` WHERE " . $where;
 		}else{
 			$sql .= "`";
+		}
+		
+		if(is_array($order) && count($orders)){
+			$sql .= " ORDER BY ";
+			
+			for($i=0;$i<count($orders);$i++){
+				$order = $orders[$i];
+				$sql .= addslashes($order);
+				if($i < count($orders) - 1){
+					$sql .= ", ";
+				}
+			}
 		}
 		
 		return $this->mysql->query($sql);
