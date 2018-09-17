@@ -180,6 +180,14 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			return $this->mysql->query($sql);
 		}
 	}
+	/*
+	 * finds the rows just like the find() method
+	 * and then deletes all of them
+	 */
+	public function truncate(){
+		$sql = "TRUNCATE `" . addslashes($this->tablename) . "`";
+		return $this->mysql->query($sql);
+	}
 	
 	/**
 	 * will update a row in the database for

@@ -60,6 +60,11 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 		return false;
 	}
 
+	public function truncate(){
+		// noop
+		return false;
+	}
+
 }
 
 ?>

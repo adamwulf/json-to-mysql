@@ -53,6 +53,8 @@ abstract class AbstractMysqlTable{
 
 	abstract public function delete($json_obj);
 
+	abstract public function truncate();
+
 	/**
 	 * helper method to make a mysql safe column name
 	 * from any input string
