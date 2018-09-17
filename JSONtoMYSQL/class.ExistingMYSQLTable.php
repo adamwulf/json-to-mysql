@@ -147,7 +147,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			$sql .= "`";
 		}
 		
-		if(is_array($order) && count($orders)){
+		if(is_array($orders) && count($orders)){
 			$sql .= " ORDER BY ";
 			
 			for($i=0;$i<count($orders);$i++){
