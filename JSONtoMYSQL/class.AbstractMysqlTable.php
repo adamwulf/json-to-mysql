@@ -25,6 +25,10 @@ abstract class AbstractMysqlTable{
 		$this->primary = $this->getColumnNameForKey($primary);
 	}
 
+	public function name(){
+		return $this->tablename;
+	}
+
 	abstract public function primaryColumn();
 
 	/**
