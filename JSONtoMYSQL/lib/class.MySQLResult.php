@@ -32,6 +32,10 @@ class MySQLResult{
 	function affected_rows(){
 		return $this->affected_rows;
 	}
+
+	function rewide(){
+		return mysqli_data_seek($this->result, 0);
+	}
 }
 
 ?>
