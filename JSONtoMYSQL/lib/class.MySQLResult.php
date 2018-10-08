@@ -58,6 +58,7 @@ class MySQLResult{
 
 	function rewind(){
 		if($this->num_rows() > 0){
+			$this->offset = 0;
 			return mysqli_data_seek($this->result, 0);
 		}
 	}
