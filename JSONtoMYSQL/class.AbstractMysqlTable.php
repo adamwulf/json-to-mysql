@@ -38,8 +38,11 @@ abstract class AbstractMysqlTable{
 	 *
 	 * this will create the table if needed, and will create
 	 * any columns necessary for existing tables
+	 *
+	 * $typeForColName($data, $value) can return a mysql data type
+	 * to override JSONtoMYSQL's auto type.
 	 */
-	abstract public function validateTableFor($json_data);
+	abstract public function validateTableFor($json_data, Closure $typeForColName = null);
 
 	/**
 	 * will insert or update the table for the input
@@ -63,7 +66,7 @@ abstract class AbstractMysqlTable{
 	 * helper method to make a mysql safe column name
 	 * from any input string
 	 */
-	protected function getColumnNameForKey($key){
+	public function getColumnNameForKey($key){
 		return preg_replace('/[^a-zA-Z0-9_]/', '', $key);
 	}
 
@@ -72,7 +75,9 @@ abstract class AbstractMysqlTable{
 	 * the input variable value
 	 */
 	protected function getMysqlTypeForValue($val){
-		if(preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $val)){
+		if(preg_match('/\d{4}-\d{2}-\d{2}/', $val)){
+			return "DATE";
+		}else if(preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $val)){
 			return "DATETIME";
 		}else if(is_string($val)){
 			return "TEXT";

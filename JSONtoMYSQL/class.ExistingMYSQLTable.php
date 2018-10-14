@@ -24,7 +24,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * make sure to cache our primary column name
 	 * to ease future operations
 	 */
-	public function validateTableFor($data){
+	public function validateTableFor($data, Closure $typeForColName = null){
 	
 		if(!count($this->fields)){
 			// pull the primary column from the database
@@ -55,6 +55,11 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				}
 				if(!$hasField){
 					$type = $this->getMysqlTypeForValue($value);
+					
+					if($typeForColName){
+						$type = $typeForColName($columnname, $value, $type);
+					}
+
 					$missing[] = array("name" => $columnname, "type" => $type);
 				}
 			}
@@ -65,6 +70,29 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				$result = $this->mysql->query($sql);
 				$this->fields[] = $field;
 			}
+		}
+	}
+	
+	public function addUniqueIndexTo($columns, $name){
+		$sql = "show index from " . addslashes($this->tablename) . " where Key_name = '" . addslashes($name) . "' ;";
+		$result = $this->mysql->query($sql);
+
+		if(!$result->num_rows()){
+			
+			$cols = "";
+			foreach($columns as $column){
+				if(strlen($cols)){
+					$cols .= ", ";
+				}
+				if(is_string($column)){
+					$cols .= "`" . addslashes($column) . "`";
+				}else if(is_array($column)){
+					$cols .= "`" . addslashes($column[0]) . "`(" . ((int)$column[1]) . ")";
+				}
+			}
+			
+			$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD UNIQUE `" . addslashes($name) . "` (" . $cols . ");";
+			$result = $this->mysql->query($sql);
 		}
 	}
 	

@@ -88,6 +88,7 @@ class MySQLConn{
 				/**
 				 * save the query to the DB, so I can look at it later
 				 */
+				error_log("long query: " . $sql);
 				if(is_object($this->logger)){
 					$this->logger->longQuery($time, $sql);
 				}

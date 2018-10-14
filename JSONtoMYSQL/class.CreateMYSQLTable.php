@@ -18,7 +18,7 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 	 * the appropriate primary column as specified
 	 * in the constructor
 	 */
-	public function validateTableFor($data){
+	public function validateTableFor($data, Closure $typeForColName = null){
 		$colstr = "";
 		
 		foreach($data as $key => $value){
@@ -29,6 +29,11 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 			}else if($key != $this->primary){
 				$colname = $this->getColumnNameForKey($key);
 				$type = $this->getMysqlTypeForValue($value);
+				
+				if($typeForColName){
+					$type = $typeForColName($colname, $value, $type);
+				}
+				
 				$colstr .= "  `" . $colname . "` " . $type . " NOT NULL,";
 			}
 		}
