@@ -255,7 +255,11 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 					$set .= ", ";
 				}
 				$set .= "`" . $colname . "`";
-				$set .= " = '" . addslashes($value) . "'";
+				if(is_null($value)){
+					$set .= " = NULL";
+				}else{
+					$set .= " = '" . addslashes($value) . "'";
+				}
 			}
 		}
 		if(strlen($set)){
@@ -288,7 +292,12 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 					$values .= ",";
 				}
 				$fields .= "`" . $colname . "`";
-				$values .= "'" . addslashes($value) . "'";
+
+				if(is_null($value)){
+					$values .= "NULL";
+				}else{
+					$values .= "'" . addslashes($value) . "'";
+				}
 			}
 		}
 	
