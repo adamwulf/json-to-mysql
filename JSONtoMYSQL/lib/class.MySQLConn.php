@@ -96,6 +96,7 @@ class MySQLConn{
 			
 			if(mysqli_error($this->_mysqli_link)){
 				if($verbose) echo "mysqli_error: " . mysqli_error($this->_mysqli_link) . "<br>";
+				error_log("sql error: " . $sql);
 				throw new Exception(mysqli_error($this->_mysqli_link));
 			}
 			if(strpos($sql, "SELECT") === 0){

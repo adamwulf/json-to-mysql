@@ -59,6 +59,10 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 					if($typeForColName){
 						$type = $typeForColName($columnname, $value, $type);
 					}
+					
+					if(!$type){
+						error_log(" - unknown type for column " . $columnname);
+					}
 
 					$missing[] = array("name" => $columnname, "type" => $type);
 				}
