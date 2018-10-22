@@ -29,12 +29,25 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 			}else if($key != $this->primary){
 				$colname = $this->getColumnNameForKey($key);
 				$type = $this->getMysqlTypeForValue($value);
-				
+				$nullable = false;
+
 				if($typeForColName){
-					$type = $typeForColName($colname, $value, $type);
+					$typeInfo = $typeForColName($colname, $value, $type);
+					if(is_array($typeInfo)){
+						$type = $typeInfo[0];
+						$nullable = $typeInfo[1];
+					}else{
+						$type = $typeInfo;
+					}
 				}
 				
-				$colstr .= "  `" . $colname . "` " . $type . " NOT NULL,";
+				if(!$type){
+					error_log(" - unknown type for column " . $columnname);
+				}
+
+				$nullability = $nullable ? " NULL " : " NOT NULL ";
+				
+				$colstr .= "  `" . $colname . "` " . $type . $nullability . ",";
 			}
 		}
 	

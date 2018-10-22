@@ -24,7 +24,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * make sure to cache our primary column name
 	 * to ease future operations
 	 */
-	public function validateTableFor($data, Closure $typeForColName = null){
+	public function validateTableFor($data, Closure $typeForColName = null, Closure $nullabilityForColName = null){
 	
 		if(!count($this->fields)){
 			// pull the primary column from the database
@@ -38,7 +38,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			$sql = "SHOW FIELDS FROM  `" . addslashes($this->tablename) . "`";
 			$result = $this->mysql->query($sql);
 			while($row = $result->fetch_array()){
-				$field = array("name" => $row["Field"], "type" => $row["Type"]);
+				$field = array("name" => $row["Field"], "type" => $row["Type"], "nullable" => $row["Null"] == "YES");
 				$this->fields[] = $field;
 			}
 		}
@@ -55,22 +55,30 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				}
 				if(!$hasField){
 					$type = $this->getMysqlTypeForValue($value);
-					
+					$nullable = false;
+
 					if($typeForColName){
-						$type = $typeForColName($columnname, $value, $type);
+						$typeInfo = $typeForColName($colname, $value, $type);
+						if(is_array($typeInfo)){
+							$type = $typeInfo[0];
+							$nullable = $typeInfo[1];
+						}else{
+							$type = $typeInfo;
+						}
 					}
 					
 					if(!$type){
 						error_log(" - unknown type for column " . $columnname);
 					}
-
-					$missing[] = array("name" => $columnname, "type" => $type);
+					
+					$missing[] = array("name" => $columnname, "type" => $type, "nullable" => $nullable);
 				}
 			}
 		}
 		if(count($missing)){
 			foreach($missing as $field){
-				$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD `" . addslashes($field["name"]) . "` " . addslashes($field["type"]) . ";";
+				$nullability = $field["nullable"] ? " NULL " : " NOT NULL ";
+				$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD `" . addslashes($field["name"]) . "` " . addslashes($field["type"]) . $nullability . ";";
 				$result = $this->mysql->query($sql);
 				$this->fields[] = $field;
 			}
@@ -96,6 +104,29 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			}
 			
 			$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD UNIQUE `" . addslashes($name) . "` (" . $cols . ");";
+			$result = $this->mysql->query($sql);
+		}
+	}
+	
+	public function addIndexTo($columns, $name){
+		$sql = "show index from " . addslashes($this->tablename) . " where Key_name = '" . addslashes($name) . "' ;";
+		$result = $this->mysql->query($sql);
+
+		if(!$result->num_rows()){
+			
+			$cols = "";
+			foreach($columns as $column){
+				if(strlen($cols)){
+					$cols .= ", ";
+				}
+				if(is_string($column)){
+					$cols .= "`" . addslashes($column) . "`";
+				}else if(is_array($column)){
+					$cols .= "`" . addslashes($column[0]) . "`(" . ((int)$column[1]) . ")";
+				}
+			}
+			
+			$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD INDEX `" . addslashes($name) . "` (" . $cols . ");";
 			$result = $this->mysql->query($sql);
 		}
 	}
