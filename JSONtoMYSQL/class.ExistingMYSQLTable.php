@@ -58,7 +58,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 					$nullable = false;
 
 					if($typeForColName){
-						$typeInfo = $typeForColName($colname, $value, $type);
+						$typeInfo = $typeForColName($columnname, $value, $type);
 						if(is_array($typeInfo)){
 							$type = $typeInfo[0];
 							$nullable = $typeInfo[1];

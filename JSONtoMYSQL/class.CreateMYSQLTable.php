@@ -42,7 +42,7 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 				}
 				
 				if(!$type){
-					error_log(" - unknown type for column " . $columnname);
+					error_log(" - unknown type for column " . $colname);
 				}
 
 				$nullability = $nullable ? " NULL " : " NOT NULL ";
