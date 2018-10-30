@@ -251,7 +251,8 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			}
 		}
 		if(strlen($where)){
-			$sql = "DELETE FROM `" . addslashes($this->tablename) . "` WHERE " . $where;
+			$sql = "DELETE FROM `" . addslashes($this->tablename) . "` WHERE " . $where;			
+			
 			return $this->mysql->query($sql);
 		}
 	}
