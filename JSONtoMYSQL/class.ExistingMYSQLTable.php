@@ -25,7 +25,8 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * to ease future operations
 	 */
 	public function validateTableFor($data, Closure $typeForColName = null, Closure $nullabilityForColName = null){
-	
+		$issues = [];
+		
 		if(!count($this->fields)){
 			// pull the primary column from the database
 			$sql = "show index from " . addslashes($this->tablename) . " where Key_name = 'PRIMARY' ;";
@@ -42,36 +43,50 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				$this->fields[] = $field;
 			}
 		}
-	
+		
 		$missing = array();
 		foreach($data as $key => $value){
 			if(!is_array($value) && !is_object($value)){
 				$columnname = $this->getColumnNameForKey($key);
-				$hasField = false;
+				$found = false;
 				foreach($this->fields as $field){
 					if($field["name"] == $columnname){
-						$hasField = true;
+						$found = $field;
+						break;
 					}
 				}
-				if(!$hasField){
-					$type = $this->getMysqlTypeForValue($value);
-					$nullable = false;
+				$type = $this->getMysqlTypeForValue($value);
+				$nullable = null;
 
-					if($typeForColName){
-						$typeInfo = $typeForColName($columnname, $value, $type);
-						if(is_array($typeInfo)){
-							$type = $typeInfo[0];
-							$nullable = $typeInfo[1];
-						}else{
-							$type = $typeInfo;
-						}
+				if($typeForColName){
+					$typeInfo = $typeForColName($columnname, $value, $type);
+					if(is_array($typeInfo)){
+						$type = $typeInfo[0];
+						$nullable = $typeInfo[1];
+					}else{
+						$type = $typeInfo;
 					}
-					
-					if(!$type){
-						error_log(" - unknown type for column " . $columnname);
-					}
-					
+				}
+				
+				if(!$type){
+					$issues[] = ["column" => $columnname, "error" => "unknown type"];
+					error_log(" - unknown type for column " . $columnname . " when validating table " . $this->name());
+				}
+				
+				if(!$found){
+					$issues[] = ["column" => $columnname, "error" => "missing column " . $type . " null? " . $nullable];
 					$missing[] = array("name" => $columnname, "type" => $type, "nullable" => $nullable);
+				}else{
+					$type = strtoupper($type);
+					$foundType = strtoupper($found["type"]);
+					if(strpos($type, $foundType) !== 0 && strpos($foundType, $type) !== 0){
+						$issues[] = ["column" => $columnname, "error" => "invalid type: should be " . $type . ", but is " . $found["type"]];
+					}
+					if($nullable && !$found["nullable"]){
+						$issues[] = ["column" => $columnname, "error" => "invalid nullability: should nullable, but isn't"];
+					}else if($nullable === false && $found["nullable"]){
+						$issues[] = ["column" => $columnname, "error" => "invalid nullability: shouldn't nullable, but is"];
+					}
 				}
 			}
 		}
@@ -83,6 +98,8 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				$this->fields[] = $field;
 			}
 		}
+		
+		return $issues;
 	}
 	
 	public function addUniqueIndexTo($columns, $name){
