@@ -87,7 +87,7 @@ abstract class AbstractMysqlTable{
 			return "BIGINT";
 		}else if(is_double($val) || is_float($val) || is_real($val)){
 			return "DOUBLE";
-		}else{
+		}else if(!is_null($val)){
 			error_log("unknown mysql type for: " . gettype($val) . "\n");
 		}
 	}

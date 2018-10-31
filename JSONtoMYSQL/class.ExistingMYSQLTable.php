@@ -68,7 +68,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 					}
 				}
 				
-				if(!$type){
+				if(!$type && !$found){
 					$issues[] = ["column" => $columnname, "error" => "unknown type"];
 					error_log(" - unknown type for column " . $columnname . " when validating table " . $this->name());
 				}
@@ -79,7 +79,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				}else{
 					$type = strtoupper($type);
 					$foundType = strtoupper($found["type"]);
-					if(strpos($type, $foundType) !== 0 && strpos($foundType, $type) !== 0){
+					if($type && $foundType && strpos($type, $foundType) !== 0 && strpos($foundType, $type) !== 0){
 						$issues[] = ["column" => $columnname, "error" => "invalid type: should be " . $type . ", but is " . $found["type"]];
 					}
 					if($nullable && !$found["nullable"]){
