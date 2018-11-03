@@ -18,7 +18,7 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 	 * the appropriate primary column as specified
 	 * in the constructor
 	 */
-	public function validateTableFor($data, Closure $typeForColName = null){
+	public function validateTableFor($data, Closure $typeForColName = null, Closure $nullabilityForColName = null){
 		$colstr = "";
 		
 		foreach($data as $key => $value){
@@ -68,7 +68,7 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 	 * that tries to find all values in the table
 	 * that match the input json object
 	 */
-	public function find($json_obj = array(), $ops=false){
+	public function find($json_obj = array(), $ops=false, $orders=false){
 		$sql = "SELECT 0 LIMIT 0";
 		return $this->mysql->query($sql);
 	}

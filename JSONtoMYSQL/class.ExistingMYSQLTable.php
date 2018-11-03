@@ -308,6 +308,11 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 					$set .= ", ";
 				}
 				$set .= "`" . $colname . "`";
+				
+				if(is_bool($value)){
+					$value = (int)$value;
+				}
+				
 				if(is_null($value)){
 					$set .= " = NULL";
 				}else{
@@ -345,6 +350,10 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 					$values .= ",";
 				}
 				$fields .= "`" . $colname . "`";
+				
+				if(is_bool($value)){
+					$value = (int)$value;
+				}
 
 				if(is_null($value)){
 					$values .= "NULL";
