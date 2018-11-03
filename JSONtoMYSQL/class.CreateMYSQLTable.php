@@ -60,7 +60,9 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 		
 		$result = $this->mysql->query($sql);
 	
-		parent::validateTableFor($data);
+		$issues = [];
+		$issues[] = ["notice" => "created table"];
+		return $issues;
 	}
 	
 	/**
