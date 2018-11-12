@@ -75,10 +75,10 @@ abstract class AbstractMysqlTable{
 	 * the input variable value
 	 */
 	protected function getMysqlTypeForValue($val){
-		if(preg_match('/\d{4}-\d{2}-\d{2}/', $val)){
-			return "DATE";
-		}else if(preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $val)){
+		if(preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $val)){
 			return "DATETIME";
+		}else if(preg_match('/\d{4}-\d{2}-\d{2}/', $val)){
+			return "DATE";
 		}else if(is_string($val)){
 			return "TEXT";
 		}else if(is_bool($val)){
