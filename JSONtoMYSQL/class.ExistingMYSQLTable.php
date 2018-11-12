@@ -93,7 +93,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		if(count($missing)){
 			foreach($missing as $field){
 				$nullability = $field["nullable"] ? " NULL " : " NOT NULL ";
-				$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD `" . addslashes($field["name"]) . "` " . addslashes($field["type"]) . $nullability . ";";
+				$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD `" . addslashes($field["name"]) . "` " . $field["type"] . $nullability . ";";
 				$result = $this->mysql->query($sql);
 				$this->fields[] = $field;
 			}
