@@ -51,6 +51,11 @@ class ClassLoader{
 							include_once $classpath . $file;
 							$ret = true;
 /* 							echo "include_once \"" . $classpath . $file . "\";//<br>\n"; */
+						}else
+						if($file == "abstract.$classname.php"){
+							include_once $classpath . $file;
+							$ret = true;
+/* 							echo "include_once \"" . $classpath . $file . "\";//<br>\n"; */
 						}
 					}
 				}
