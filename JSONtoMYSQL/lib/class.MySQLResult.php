@@ -18,7 +18,7 @@ class MySQLResult{
 		$this->offset = 0;
 	}
 
-	
+
 	function num_rows(){
 		return mysqli_num_rows($this->result);
 	}
@@ -30,20 +30,20 @@ class MySQLResult{
 		}
 		return null;
 	}
-	
+
 	function peek_array(){
 		$offset = $this->offset;
 		$ret = $this->fetch_array();
-		
+
 		if($this->offset != $offset){
 			// restore pointer to previous record
 			mysqli_data_seek($this->result, $offset);
 			$this->offset = $offset;
 		}
-		
+
 		return $ret;
 	}
-	
+
 	function insert_id(){
 		return $this->insert_id;
 	}
@@ -51,9 +51,13 @@ class MySQLResult{
 	function affected_rows(){
 		return $this->affected_rows;
 	}
-	
+
 	function has_next(){
-		return mysqli_more_results($this->result);
+		if($this->offset < $this->num_rows() - 1){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	function rewind(){
