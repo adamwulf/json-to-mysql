@@ -9,5 +9,6 @@ define("DATABASE_HOST", "your.database.host");
 define("DATABASE_NAME", "your_database_name");
 define("DATABASE_USER", "your_database_user_name");
 define("DATABASE_PASS", "your_database_password");
+define("JSONTOMYSQL_LOCKED", false);
 
 ?>

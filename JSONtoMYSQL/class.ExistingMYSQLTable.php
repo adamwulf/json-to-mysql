@@ -90,7 +90,13 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				}
 			}
 		}
-		if(count($missing)){
+		
+		if(JSONTOMYSQL_LOCKED && count($missing)){
+			$colnames = array_map(function($field){
+				return $field["name"];
+			}, $missing);
+			throw new Exception("JsonToMysql is locked. Cannot create columns " . join(',', $colnames) . " in table " . $this->tablename);
+		}else if(count($missing)){
 			foreach($missing as $field){
 				$nullability = $field["nullable"] ? " NULL " : " NOT NULL ";
 				$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD `" . addslashes($field["name"]) . "` " . $field["type"] . $nullability . ";";

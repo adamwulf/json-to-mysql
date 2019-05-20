@@ -1,4 +1,9 @@
 <?php
+
+if(!defined('JSONTOMYSQL_LOCKED')){
+	define('JSONTOMYSQL_LOCKED', false);
+}
+
 /**
  * represents a table that may or may not exist
  * in MySQL database yet
