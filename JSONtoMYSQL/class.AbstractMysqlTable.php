@@ -16,6 +16,7 @@ abstract class AbstractMysqlTable{
 	protected $tablename;
 	
 	protected $mysql;
+	protected $locked;
 	
 	// a cache of the primary index column name
 	protected $primary;
@@ -28,6 +29,15 @@ abstract class AbstractMysqlTable{
 		$this->mysql = $mysql;
 		$this->tablename = $tablename;
 		$this->primary = $this->getColumnNameForKey($primary);
+		$this->locked = JSONTOMYSQL_LOCKED;
+	}
+	
+	public function isLocked(){
+		return $this->locked;
+	}
+
+	public function setLocked($lock){
+		$this->locked = $lock;
 	}
 
 	public function name(){

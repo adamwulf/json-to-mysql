@@ -91,7 +91,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			}
 		}
 		
-		if(JSONTOMYSQL_LOCKED && count($missing)){
+		if($this->isLocked() && count($missing)){
 			$colnames = array_map(function($field){
 				return $field["name"];
 			}, $missing);
