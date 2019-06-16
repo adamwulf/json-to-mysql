@@ -205,7 +205,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				$where .= " $op (";
 				$idx = 0;
 				foreach($value as $val){
-					$where .= ($idx ? "," : "") . "'" . addslashes($value) . "'";
+					$where .= ($idx ? "," : "") . "'" . addslashes($val) . "'";
 					$idx++;
 				}
 				$where .= ") ";

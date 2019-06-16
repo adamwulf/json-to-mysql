@@ -35,7 +35,7 @@ print_r($obj);
 
 // SELECT * FROM brandnewtable WHERE id IN (4, 5, 6, 7)
 
-$obj = $db->table("brandnewtable")->find(["id" => [4, 5, 6 7]]);
+$obj = $db->table("brandnewtable")->find(["id" => [4, 5, 6, 7]]);
 
 print_r($obj);
 
