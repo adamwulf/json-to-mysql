@@ -53,7 +53,7 @@ class MySQLResult{
 	}
 
 	function has_next(){
-		if($this->offset < $this->num_rows() - 1){
+		if($this->offset < $this->num_rows()){
 			return true;
 		}else{
 			return false;
