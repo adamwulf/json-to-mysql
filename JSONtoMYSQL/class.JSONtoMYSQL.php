@@ -63,7 +63,7 @@ class JSONtoMYSQL{
 		return $result->num_rows() > 0;
 	}
 	
-	public function mysql(){
+	public function mysql() : MySQLConn{
 		return $this->mysql;
 	}
 }

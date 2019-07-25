@@ -160,7 +160,8 @@ class ClassLoader{
 //			$control->getModel()->getLogger()->log($control->getModel(), ALogger::$HIGH, $str);
 //		}
 	}catch(Exception $e){
-		$model->getLogger()->log($model, ALogger::$HIGH, print_r($e, true));
+	    error_log($e->getMessage());
+//		$model->getLogger()->log($model, ALogger::$HIGH, print_r($e, true));
 	}
   }
 

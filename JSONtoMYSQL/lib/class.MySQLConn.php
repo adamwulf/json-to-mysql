@@ -39,7 +39,7 @@ class MySQLConn{
 	}
 
 	// queries mysql and caches the result if appropriate
-	function query($sql, $verbose=false){
+	function query($sql, $verbose=false) : MySQLResult{
 		$sql = trim($sql);
 		if($this->_mysqli_link === false){
                     $this->_mysqli_link = mysqli_connect($this->host, $this->user, $this->pass, $this->database);
