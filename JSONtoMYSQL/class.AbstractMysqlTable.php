@@ -13,12 +13,16 @@ if(!defined('JSONTOMYSQL_LOCKED')){
  */
 abstract class AbstractMysqlTable{
 
+    /** @var string $tablename */
 	protected $tablename;
-	
+
+	/** @var MySQLConn $mysql */
 	protected $mysql;
+
+	/** @var bool $locked */
 	protected $locked;
 	
-	// a cache of the primary index column name
+    /** @var ?string $primary a cache of the primary index column name */
 	protected $primary;
 
 	/**
@@ -65,31 +69,34 @@ abstract class AbstractMysqlTable{
 	 * does match a value in the primary column, otherwise
 	 * will insert a new row
 	 */
-	abstract public function save($json_data);
+	abstract public function save($json_data) : ?MySQLResult;
 
-	abstract public function update($json_data);
+	abstract public function update($json_data) : ?MySQLResult;
 
-	abstract public function insert($json_data);
+	abstract public function insert($json_data) : ?MySQLResult;
 
-	abstract public function find($json_obj = array(), $ops=false);
+    abstract public function find(array $json_obj = array(), array $ops = null, array $orders = null) : ?MySQLResult;
 
-	abstract public function delete($json_obj);
+	abstract public function delete($json_obj) : ?MySQLResult;
 
-	abstract public function truncate();
+	abstract public function truncate() : ?MySQLResult;
 
 	/**
 	 * helper method to make a mysql safe column name
 	 * from any input string
 	 */
-	public function getColumnNameForKey($key){
+	public function getColumnNameForKey(string $key) : string {
 		return preg_replace('/[^a-zA-Z0-9_]/', '', $key);
 	}
 
-	/**
-	 * will determine a valid mysql column type from
-	 * the input variable value
-	 */
-	protected function getMysqlTypeForValue($val){
+    /**
+     * will determine a valid mysql column type from
+     * the input variable value
+     * @param mixed $val
+     * @return string
+     * @throws Exception
+     */
+	protected function getMysqlTypeForValue($val) : ?string {
 		if(preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $val)){
 			return "DATETIME";
 		}else if(preg_match('/\d{4}-\d{2}-\d{2}/', $val)){
@@ -103,8 +110,9 @@ abstract class AbstractMysqlTable{
 		}else if(is_double($val) || is_float($val) || is_real($val)){
 			return "DOUBLE";
 		}else if(!is_null($val)){
-			error_log("unknown mysql type for: " . gettype($val) . "\n");
+			throw new Exception("unknown mysql type for: " . gettype($val));
 		}
+		return null;
 	}
 }
 

@@ -15,7 +15,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		$this->fields = array();
 	}
 	
-	public function primaryColumn(){
+	public function primaryColumn() : string {
 		return $this->primary;
 	}
 
@@ -24,7 +24,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * make sure to cache our primary column name
 	 * to ease future operations
 	 */
-	public function validateTableFor($data, Closure $typeForColName = null, Closure $nullabilityForColName = null){
+	public function validateTableFor($data, Closure $typeForColName = null, Closure $nullabilityForColName = null) : array {
 		$issues = [];
 		
 		if(!count($this->fields)){
@@ -108,7 +108,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		return $issues;
 	}
 	
-	public function addUniqueIndexTo($columns, $name){
+	public function addUniqueIndexTo($columns, $name) : void {
 		$sql = "show index from " . addslashes($this->tablename) . " where Key_name = '" . addslashes($name) . "' ;";
 		$result = $this->mysql->query($sql);
 
@@ -131,7 +131,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		}
 	}
 	
-	public function addIndexTo($columns, $name){
+	public function addIndexTo($columns, $name) : void {
 		$sql = "show index from " . addslashes($this->tablename) . " where Key_name = '" . addslashes($name) . "' ;";
 		$result = $this->mysql->query($sql);
 
@@ -160,7 +160,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * a value for the primary column or will
 	 * insert a new row
 	 */
-	public function save($json_obj){
+	public function save($json_obj) : ?MySQLResult{
 		$this->validateTableFor($json_obj);
 		$primary = $this->primary;
 		
@@ -191,68 +191,68 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * that tries to find all values in the table
 	 * that match the input json object
 	 */
-	public function find($json_obj = array(), $ops=false, $orders=false){
-		$this->validateTableFor($json_obj);
-		$where = "";
-		foreach($json_obj as $key => $value){
-			if(is_array($value)){
-				$colname = $this->getColumnNameForKey($key);
-				if(strlen($where)){
-					$where .= " AND ";
-				}
-				$where .= "`" . $colname . "`";
-				$op = ($ops && $ops[$key]) ? addslashes($ops[$key]) : "IN";
-				$where .= " $op (";
-				$idx = 0;
-				foreach($value as $val){
-					$where .= ($idx ? "," : "") . "'" . addslashes($val) . "'";
-					$idx++;
-				}
-				$where .= ") ";
-			}else if(is_object($value)){
-/* 				echo "need to handle object subdata\n"; */
-			}else{
-				$colname = $this->getColumnNameForKey($key);
-				if(strlen($where)){
-					$where .= " AND ";
-				}
-				$where .= "`" . $colname . "`";
-				if($this->getMysqlTypeForValue($value) == "TEXT"){
-					$op = ($ops && $ops[$key]) ? addslashes($ops[$key]) : "LIKE";
-					$where .= " $op '" . addslashes($value) . "'";
-				}else{
-					$op = ($ops && $ops[$key]) ? addslashes($ops[$key]) : "=";
-					$where .= " $op '" . addslashes($value) . "'";
-				}
-			}
-		}
-		$sql = "SELECT * FROM `" . addslashes($this->tablename);
-		if($where){
-			$sql .= "` WHERE " . $where;
-		}else{
-			$sql .= "`";
-		}
-		
-		if(is_array($orders) && count($orders)){
-			$sql .= " ORDER BY ";
-			
-			for($i=0;$i<count($orders);$i++){
-				$order = $orders[$i];
-				$sql .= addslashes($order);
-				if($i < count($orders) - 1){
-					$sql .= ", ";
-				}
-			}
-		}
-		
-		return $this->mysql->query($sql);
-	}
+    public function find(array $json_obj = array(), array $ops = null, array $orders = null) : ?MySQLResult{
+        $this->validateTableFor($json_obj);
+        $where = "";
+        foreach ($json_obj as $key => $value) {
+            if (is_array($value)) {
+                $colname = $this->getColumnNameForKey($key);
+                if (strlen($where)) {
+                    $where .= " AND ";
+                }
+                $where .= "`" . $colname . "`";
+                $op = ($ops && $ops[$key]) ? addslashes($ops[$key]) : "IN";
+                $where .= " $op (";
+                $idx = 0;
+                foreach ($value as $val) {
+                    $where .= ($idx ? "," : "") . "'" . addslashes($val) . "'";
+                    $idx++;
+                }
+                $where .= ") ";
+            } else if (is_object($value)) {
+                /* 				echo "need to handle object subdata\n"; */
+            } else {
+                $colname = $this->getColumnNameForKey($key);
+                if (strlen($where)) {
+                    $where .= " AND ";
+                }
+                $where .= "`" . $colname . "`";
+                if ($this->getMysqlTypeForValue($value) == "TEXT") {
+                    $op = ($ops && $ops[$key]) ? addslashes($ops[$key]) : "LIKE";
+                    $where .= " $op '" . addslashes($value) . "'";
+                } else {
+                    $op = ($ops && $ops[$key]) ? addslashes($ops[$key]) : "=";
+                    $where .= " $op '" . addslashes($value) . "'";
+                }
+            }
+        }
+        $sql = "SELECT * FROM `" . addslashes($this->tablename);
+        if ($where) {
+            $sql .= "` WHERE " . $where;
+        } else {
+            $sql .= "`";
+        }
+
+        if (is_array($orders) && count($orders)) {
+            $sql .= " ORDER BY ";
+
+            for ($i = 0; $i < count($orders); $i++) {
+                $order = $orders[$i];
+                $sql .= addslashes($order);
+                if ($i < count($orders) - 1) {
+                    $sql .= ", ";
+                }
+            }
+        }
+
+        return $this->mysql->query($sql);
+    }
 	
 	/*
 	 * finds the rows just like the find() method
 	 * and then deletes all of them
 	 */
-	public function delete($json_obj){
+	public function delete($json_obj) : ?MySQLResult{
 		$where = "";
 		
 		foreach($json_obj as $key => $value){
@@ -283,7 +283,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * finds the rows just like the find() method
 	 * and then deletes all of them
 	 */
-	public function truncate(){
+	public function truncate() : ?MySQLResult{
 		$sql = "TRUNCATE `" . addslashes($this->tablename) . "`";
 		return $this->mysql->query($sql);
 	}
@@ -293,7 +293,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * the input object by comparing its value
 	 * for the primary column name
 	 */
-	public function update($json_obj){
+	public function update($json_obj) : ?MySQLResult{
 		$this->validateTableFor($json_obj);
 		$set = "";
 		
@@ -339,7 +339,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * to the table with all of the values
 	 * of the input json object
 	 */
-	public function insert($json_obj){
+	public function insert($json_obj) : ?MySQLResult{
 		$this->validateTableFor($json_obj);
 		$fields = "";
 		$values = "";
@@ -381,7 +381,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * returns true if the input column name already exists
 	 * in the table, or false otherwise
 	 */
-	protected function columnExistsInTableHuh($columnname){
+	protected function columnExistsInTableHuh($columnname) : bool {
 		if(count($this->fields)){
 			foreach($this->fields as $field){
 				if($field["name"] == $columnname){
