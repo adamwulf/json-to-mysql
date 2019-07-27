@@ -81,6 +81,10 @@ abstract class AbstractMysqlTable{
 
 	abstract public function truncate() : MySQLResult;
 
+    abstract public function addUniqueIndexTo(array $columns, string $name): void;
+
+    abstract public function addIndexTo(array $columns, string $name) : void;
+
 	/**
 	 * helper method to make a mysql safe column name
 	 * from any input string

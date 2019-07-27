@@ -106,8 +106,14 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		
 		return $issues;
 	}
-	
-	public function addUniqueIndexTo($columns, $name) : void {
+
+
+    /**
+     * @param array<string> $columns
+     * @param string $name
+     * @throws Exception
+     */
+    public function addUniqueIndexTo(array $columns, string $name) : void {
 		$sql = "show index from " . addslashes($this->tablename) . " where Key_name = '" . addslashes($name) . "' ;";
 		$result = $this->mysql->query($sql);
 
@@ -126,11 +132,16 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			}
 			
 			$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD UNIQUE `" . addslashes($name) . "` (" . $cols . ");";
-			$result = $this->mysql->query($sql);
+			$this->mysql->query($sql);
 		}
 	}
-	
-	public function addIndexTo($columns, $name) : void {
+
+    /**
+     * @param array<string> $columns
+     * @param string $name
+     * @throws Exception
+     */
+    public function addIndexTo(array $columns, string $name) : void {
 		$sql = "show index from " . addslashes($this->tablename) . " where Key_name = '" . addslashes($name) . "' ;";
 		$result = $this->mysql->query($sql);
 
@@ -149,7 +160,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			}
 			
 			$sql = "ALTER TABLE `" . addslashes($this->tablename) . "` ADD INDEX `" . addslashes($name) . "` (" . $cols . ");";
-			$result = $this->mysql->query($sql);
+			$this->mysql->query($sql);
 		}
 	}
 	

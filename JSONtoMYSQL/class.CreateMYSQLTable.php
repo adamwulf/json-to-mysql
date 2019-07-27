@@ -89,5 +89,14 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
         return $this->mysql->query($sql);
 	}
 
+
+    public function addUniqueIndexTo(array $columns, string $name): void{
+	    // noop
+    }
+
+    public function addIndexTo(array $columns, string $name) : void{
+	    // noop
+    }
+
 }
 
