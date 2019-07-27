@@ -407,4 +407,3 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 
 }
 
-?>

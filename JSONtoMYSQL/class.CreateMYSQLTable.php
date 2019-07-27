@@ -91,4 +91,3 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 
 }
 
-?>

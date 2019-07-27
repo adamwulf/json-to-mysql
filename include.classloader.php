@@ -168,4 +168,3 @@ class ClassLoader{
 spl_autoload_register('milestone_autoload');
 
 	$classLoader = new ClassLoader();
-?>

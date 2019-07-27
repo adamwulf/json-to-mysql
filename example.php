@@ -21,4 +21,3 @@ $obj = json_decode('{"id":4,"asdf" : "asfd"}');
 $db->save($obj, "brandnewtable");
 
 
-?>
