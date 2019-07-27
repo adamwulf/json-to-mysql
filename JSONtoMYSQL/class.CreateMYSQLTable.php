@@ -74,19 +74,19 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 	 * that tries to find all values in the table
 	 * that match the input json object
 	 */
-	public function find($json_obj = array(), $ops=false, $orders=false) : ?MySQLResult{
+	public function find($json_obj = array(), $ops=false, $orders=false) : MySQLResult{
 		$sql = "SELECT 0 LIMIT 0";
 		return $this->mysql->query($sql);
 	}
 
-	public function delete($json_obj) : ?MySQLResult{
-		// noop
-		return null;
+	public function delete($json_obj) : MySQLResult{
+        $sql = "SELECT 0 LIMIT 0";
+        return $this->mysql->query($sql);
 	}
 
-	public function truncate() : ?MySQLResult{
-		// noop
-		return null;
+	public function truncate() : MySQLResult{
+        $sql = "SELECT 0 LIMIT 0";
+        return $this->mysql->query($sql);
 	}
 
 }

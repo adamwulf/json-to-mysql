@@ -19,7 +19,6 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		return $this->primary;
 	}
 
-
 	/**
 	 * make sure to cache our primary column name
 	 * to ease future operations
@@ -160,7 +159,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * a value for the primary column or will
 	 * insert a new row
 	 */
-	public function save($json_obj) : ?MySQLResult{
+	public function save($json_obj) : MySQLResult{
 		$this->validateTableFor($json_obj);
 		$primary = $this->primary;
 		
@@ -191,7 +190,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * that tries to find all values in the table
 	 * that match the input json object
 	 */
-    public function find(array $json_obj = array(), array $ops = null, array $orders = null) : ?MySQLResult{
+    public function find(array $json_obj = array(), array $ops = null, array $orders = null) : MySQLResult{
         $this->validateTableFor($json_obj);
         $where = "";
         foreach ($json_obj as $key => $value) {
@@ -252,7 +251,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * finds the rows just like the find() method
 	 * and then deletes all of them
 	 */
-	public function delete($json_obj) : ?MySQLResult{
+	public function delete($json_obj) : MySQLResult{
 		$where = "";
 		
 		foreach($json_obj as $key => $value){
@@ -277,13 +276,16 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			$sql = "DELETE FROM `" . addslashes($this->tablename) . "` WHERE " . $where;			
 			
 			return $this->mysql->query($sql);
-		}
+		}else{
+            $sql = "SELECT 0 LIMIT 0";
+            return $this->mysql->query($sql);
+        }
 	}
 	/*
 	 * finds the rows just like the find() method
 	 * and then deletes all of them
 	 */
-	public function truncate() : ?MySQLResult{
+	public function truncate() : MySQLResult{
 		$sql = "TRUNCATE `" . addslashes($this->tablename) . "`";
 		return $this->mysql->query($sql);
 	}
@@ -293,7 +295,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * the input object by comparing its value
 	 * for the primary column name
 	 */
-	public function update($json_obj) : ?MySQLResult{
+	public function update($json_obj) : MySQLResult{
 		$this->validateTableFor($json_obj);
 		$set = "";
 		
@@ -331,7 +333,10 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				 . $set . " WHERE `" . $this->primary . "`='" . addslashes($primary_val) . "';";
 			
 			return $this->mysql->query($sql);
-		}
+		}else{
+            $sql = "SELECT 0 LIMIT 0";
+            return $this->mysql->query($sql);
+        }
 	}
 	
 	/**
@@ -339,7 +344,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 	 * to the table with all of the values
 	 * of the input json object
 	 */
-	public function insert($json_obj) : ?MySQLResult{
+	public function insert($json_obj) : MySQLResult{
 		$this->validateTableFor($json_obj);
 		$fields = "";
 		$values = "";
@@ -374,7 +379,10 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				 . "(" . $fields . ") VALUES (" . $values . ")";
 			
 			return $this->mysql->query($sql);
-		}
+		}else{
+            $sql = "SELECT 0 LIMIT 0";
+            return $this->mysql->query($sql);
+        }
 	}
 
 	/**
