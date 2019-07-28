@@ -12,7 +12,6 @@ class MySQLConn{
 	private $database;
 	private $user;
 	private $pass;
-	private $timer;
 
 	/**
 	 * optional logger
@@ -20,8 +19,10 @@ class MySQLConn{
 	private $logger;
 
 	// the link, or false if none
+    /** @var mysqli|false $_mysqli_link */
 	private $_mysqli_link;
 	private $_query_count;
+	private $_query_cache;
 
 
 	public function __construct($h, $db, $u, $p, $log = null){
@@ -35,8 +36,14 @@ class MySQLConn{
 		$this->logger = $log;
 	}
 
-	// queries mysql and caches the result if appropriate
-	function query($sql, $verbose=false) : MySQLResult{
+    /**
+     * queries mysql and caches the result if appropriate
+     * @param $sql
+     * @param bool $verbose
+     * @return MySQLResult
+     * @throws DatabaseException
+     */
+    function query($sql, $verbose=false) : MySQLResult{
 		$sql = trim($sql);
 		if($this->_mysqli_link === false){
                     $this->_mysqli_link = mysqli_connect($this->host, $this->user, $this->pass, $this->database);
@@ -109,16 +116,16 @@ class MySQLConn{
 		return $ret;
 	}
 	
-	function reset(){
+	function reset() : void{
 		$this->_query_count = 0;
 		$this->_query_cache->reset();
 	}
 
-	function getQueryCount(){
+	function getQueryCount() : int{
 		return $this->_query_count;
 	}
 	
-	function close(){
+	function close() : bool{
 		if(!is_bool($this->_mysqli_link)){
 			return @mysqli_close($this->_mysqli_link);
 		}else{
