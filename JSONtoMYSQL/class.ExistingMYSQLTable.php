@@ -246,8 +246,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
         if (is_array($orders) && count($orders)) {
             $sql .= " ORDER BY ";
 
-            for ($i = 0; $i < count($orders); $i++) {
-                $order = $orders[$i];
+            foreach ($orders as $i => $order) {
                 $sql .= addslashes($order);
                 if ($i < count($orders) - 1) {
                     $sql .= ", ";

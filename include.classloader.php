@@ -20,12 +20,11 @@ class ClassLoader{
 	
 	public function load($classname){
 		$ok = false;
-		for($i=0;$i<count($this->classpath);$i++){
-			$path = $this->classpath[$i];
+        foreach ($this->classpath as $path) {
 /* 			echo "load recur \"" . $path . "\";//<br>\n"; */
-			$ok = $ok || $this->load_recursive($path, $classname);
-		}
-		return $ok;
+            $ok = $ok || $this->load_recursive($path, $classname);
+        }
+        return $ok;
 	}
 
 	protected function load_recursive($classpath, $classname){

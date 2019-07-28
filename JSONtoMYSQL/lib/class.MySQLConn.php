@@ -44,9 +44,9 @@ class MySQLConn{
 		}
 		if($this->_mysqli_link === false){
 			throw new DatabaseException("could not connect to MySQL");
-		};
+		}
 
-		if($this->_query_cache->get($sql)){
+        if($this->_query_cache->get($sql)){
 			if($verbose)echo "found in cache<br/>";
 			$result = $this->_query_cache->get($sql);
 			if(mysqli_num_rows($result)){
