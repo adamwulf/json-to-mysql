@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpIncludeInspection */
+
 /**
  * Licensed under Creative Commons 3.0 Attribution
  * Copyright Adam Wulf 2013
@@ -10,15 +11,23 @@ class ClassLoader{
 		$this->classpath = array();
 	}
 
-	public function addToClasspath($dir){
+    /**
+     * @param $dir
+     * @throws Exception
+     */
+    public function addToClasspath($dir) : void{
 		if(is_dir($dir)){
 			$this->classpath[] = $dir;
 		}else{
 			throw new Exception("cannot find directory: $dir");
 		}
 	}
-	
-	public function load($classname){
+
+    /**
+     * @param $classname
+     * @return bool
+     */
+    public function load($classname) : bool{
 		$ok = false;
         foreach ($this->classpath as $path) {
 /* 			echo "load recur \"" . $path . "\";//<br>\n"; */
@@ -27,8 +36,7 @@ class ClassLoader{
         return $ok;
 	}
 
-	protected function load_recursive($classpath, $classname){
-		$theList = array();
+	protected function load_recursive($classpath, $classname) : bool{
 		$ret = false;
 		if ($handle = opendir($classpath)) {
 			while (false != ($file = readdir($handle))) {
@@ -64,43 +72,11 @@ class ClassLoader{
 		}
 		return $ret;
 	}
-	
-	public function loadTestFiles(GroupTest $g){
-		foreach($this->classpath as $c){
-			$this->loadTestFilesHelper($g, $c);
-		}
-	}
-	
-	protected function loadTestFilesHelper(GroupTest $g, $classpath){
-		$theList = array();
-		if ($handle = opendir($classpath)) {
-			while (false != ($file = readdir($handle))) {
-				if ($file != "." && $file != "..") {
-					if(is_dir($classpath . $file)){
-						$this->loadTestFilesHelper($g, $classpath . $file . "/");
-					}else{
-						if(strpos($file, "test.class.") === 0 &&
-						strpos($file, ".php") == strlen($file)-4){
-							$g->addTestFile($classpath . $file);
-						}
-					}
-				}
-			}
-		closedir($handle);
-		unset($handle);
-		}
-		
-	}
   }
 
   class ClassLoaderToString extends ClassLoader{
 
-	public function __construct(){
-		parent::__construct();
-	}
-
-	protected function load_recursive($classpath, $classname){
-		$theList = array();
+	protected function load_recursive($classpath, $classname) : bool{
 		$ret = false;
 		if ($handle = opendir($classpath)) {
 			while (false != ($file = readdir($handle))) {
@@ -132,7 +108,7 @@ class ClassLoader{
 		return $ret;
 	}
 
-	protected function printClass($classpath, $file){
+	protected function printClass($classpath, $file) : void{
 		if(strpos($classpath, ROOT) === 0){
 			$classpath = substr($classpath, strlen(ROOT));
 			echo "include_once(ROOT . \"" . $classpath . $file . "\");\n";
@@ -153,13 +129,14 @@ class ClassLoader{
 //		$control->getModel()->getLogger()->log($control->getModel(), ALogger::$HIGH, $str);
 //	}
 	try{
-		$ok = $classLoader->load($classname);
+		$classLoader->load($classname);
 //		$str .= ":" . $ok;
 //		if(is_object($control) && !is_int(stripos($classname, "mysql"))){
 //			$control->getModel()->getLogger()->log($control->getModel(), ALogger::$HIGH, $str);
 //		}
 	}catch(Exception $e){
-	    error_log($e->getMessage());
+        /** @noinspection ForgottenDebugOutputInspection */
+        error_log($e->getMessage());
 //		$model->getLogger()->log($model, ALogger::$HIGH, print_r($e, true));
 	}
   }
