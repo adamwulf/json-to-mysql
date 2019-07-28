@@ -20,7 +20,7 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 	 */
 	public function validateTableFor($data, Closure $typeForColName = null, Closure $nullabilityForColName = null) : array {
 		if($this->isLocked()){
-			throw new Exception("JsonToMysql is locked. Cannot create new table " . $this->tablename);
+			throw new DatabaseException("JsonToMysql is locked. Cannot create new table " . $this->tablename);
 		}
 	
 		$colstr = "";

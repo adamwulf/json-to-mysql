@@ -94,7 +94,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			$colnames = array_map(function($field){
 				return $field["name"];
 			}, $missing);
-			throw new Exception("JsonToMysql is locked. Cannot create columns " . join(',', $colnames) . " in table " . $this->tablename);
+			throw new DatabaseException("JsonToMysql is locked. Cannot create columns " . join(',', $colnames) . " in table " . $this->tablename);
 		}else if(count($missing)){
 			foreach($missing as $field){
 				$nullability = $field["nullable"] ? " NULL " : " NOT NULL ";
@@ -111,7 +111,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
     /**
      * @param array<string> $columns
      * @param string $name
-     * @throws Exception
+     * @throws DatabaseException
      */
     public function addUniqueIndexTo(array $columns, string $name) : void {
 		$sql = "show index from " . addslashes($this->tablename) . " where Key_name = '" . addslashes($name) . "' ;";
@@ -139,7 +139,7 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
     /**
      * @param array<string> $columns
      * @param string $name
-     * @throws Exception
+     * @throws DatabaseException
      */
     public function addIndexTo(array $columns, string $name) : void {
 		$sql = "show index from " . addslashes($this->tablename) . " where Key_name = '" . addslashes($name) . "' ;";

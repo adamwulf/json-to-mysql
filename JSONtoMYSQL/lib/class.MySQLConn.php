@@ -32,9 +32,6 @@ class MySQLConn{
 		$this->_query_count = 0;
 		$this->_mysqli_link = false;
 		$this->_query_cache = new HashTable();
-		if($log !== null && !($log instanceof ALogger)){
-			throw new IllegalArgumentException("optional argument to " . __METHOD__ . " must be an ALogger");
-		}
 		$this->logger = $log;
 	}
 
@@ -46,7 +43,7 @@ class MySQLConn{
                     mysqli_set_charset($this->_mysqli_link, "utf8");
 		}
 		if($this->_mysqli_link === false){
-			throw new Exception("could not connect to MySQL");
+			throw new DatabaseException("could not connect to MySQL");
 		};
 
 		if($this->_query_cache->get($sql)){
@@ -97,7 +94,7 @@ class MySQLConn{
 			if(mysqli_error($this->_mysqli_link)){
 				if($verbose) echo "mysqli_error: " . mysqli_error($this->_mysqli_link) . "<br>";
 				error_log("sql error: " . $sql);
-				throw new Exception(mysqli_error($this->_mysqli_link));
+				throw new DatabaseException(mysqli_error($this->_mysqli_link));
 			}
 			if(strpos($sql, "SELECT") === 0){
 				if($verbose) echo ": select: $sql<br><br>";

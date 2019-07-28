@@ -98,7 +98,7 @@ abstract class AbstractMysqlTable{
      * the input variable value
      * @param mixed $val
      * @return string
-     * @throws Exception
+     * @throws DatabaseException
      */
 	protected function getMysqlTypeForValue($val) : ?string {
 		if(preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $val)){
@@ -114,7 +114,7 @@ abstract class AbstractMysqlTable{
 		}else if(is_double($val) || is_float($val) || is_real($val)){
 			return "DOUBLE";
 		}else if(!is_null($val)){
-			throw new Exception("unknown mysql type for: " . gettype($val));
+			throw new DatabaseException("unknown mysql type for: " . gettype($val));
 		}
 		return null;
 	}

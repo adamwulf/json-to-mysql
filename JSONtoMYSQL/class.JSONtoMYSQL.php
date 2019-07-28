@@ -8,7 +8,6 @@ class JSONtoMYSQL{
 	public static $UPDATE = 'update';
 	public static $INSERT = 'insert';
 
-
 	protected $mysql;
 	protected $table_cache;
 
