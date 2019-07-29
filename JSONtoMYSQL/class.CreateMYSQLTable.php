@@ -9,15 +9,12 @@
  */
 class CreateMYSQLTable extends ExistingMYSQLTable{
 
-	public function __construct($mysql, $tablename, $primary="id"){
-		parent::__construct($mysql, $tablename, $primary);
-	}
-
-	/**
-	 * this will create the input table including
-	 * the appropriate primary column as specified
-	 * in the constructor
-	 */
+    /**
+     * this will create the input table including
+     * the appropriate primary column as specified
+     * in the constructor
+     * @throws DatabaseException
+     */
 	public function validateTableFor($data, Closure $typeForColName = null, Closure $nullabilityForColName = null) : array {
 		if($this->isLocked()){
 			throw new DatabaseException("JsonToMysql is locked. Cannot create new table " . $this->tablename);
@@ -46,7 +43,8 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 				}
 				
 				if(!$type){
-					error_log(" - unknown type for column " . $colname);
+                    /** @noinspection ForgottenDebugOutputInspection */
+                    error_log(" - unknown type for column " . $colname);
 				}
 
 				$nullability = $nullable ? " NULL " : " NOT NULL ";
@@ -68,23 +66,33 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 		$issues[] = ["notice" => "created table"];
 		return $issues;
 	}
-	
-	/**
-	 * returns a MysqlResult for a SELECT query
-	 * that tries to find all values in the table
-	 * that match the input json object
-	 */
+
+    /**
+     * returns a MysqlResult for a SELECT query
+     * that tries to find all values in the table
+     * that match the input json object
+     * @throws DatabaseException
+     */
 	public function find($json_obj = array(), $ops=false, $orders=false) : MySQLResult{
 		$sql = "SELECT 0 LIMIT 0";
 		return $this->mysql->query($sql);
 	}
 
-	public function delete($json_obj) : MySQLResult{
+    /**
+     * @param $json_obj
+     * @return MySQLResult
+     * @throws DatabaseException
+     */
+    public function delete($json_obj) : MySQLResult{
         $sql = "SELECT 0 LIMIT 0";
         return $this->mysql->query($sql);
 	}
 
-	public function truncate() : MySQLResult{
+    /**
+     * @return MySQLResult
+     * @throws DatabaseException
+     */
+    public function truncate() : MySQLResult{
         $sql = "SELECT 0 LIMIT 0";
         return $this->mysql->query($sql);
 	}

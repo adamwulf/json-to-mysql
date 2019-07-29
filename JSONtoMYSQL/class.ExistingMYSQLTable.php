@@ -19,10 +19,11 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 		return $this->primary;
 	}
 
-	/**
-	 * make sure to cache our primary column name
-	 * to ease future operations
-	 */
+    /**
+     * make sure to cache our primary column name
+     * to ease future operations
+     * @throws DatabaseException
+     */
 	public function validateTableFor($data, Closure $typeForColName = null, Closure $nullabilityForColName = null) : array {
 		$issues = [];
 		
@@ -163,13 +164,14 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			$this->mysql->query($sql);
 		}
 	}
-	
-	
-	/**
-	 * will save the input json object contains
-	 * a value for the primary column or will
-	 * insert a new row
-	 */
+
+
+    /**
+     * will save the input json object contains
+     * a value for the primary column or will
+     * insert a new row
+     * @throws DatabaseException
+     */
 	public function save($json_obj) : MySQLResult{
 		$this->validateTableFor($json_obj);
 		$primary = $this->primary;
@@ -194,13 +196,14 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 			return $this->insert($json_obj);
 		}
 	}
-	
-	
-	/**
-	 * returns a MysqlResult for a SELECT query
-	 * that tries to find all values in the table
-	 * that match the input json object
-	 */
+
+
+    /**
+     * returns a MysqlResult for a SELECT query
+     * that tries to find all values in the table
+     * that match the input json object
+     * @throws DatabaseException
+     */
     public function find(array $json_obj = array(), array $ops = null, array $orders = null) : MySQLResult{
         $this->validateTableFor($json_obj);
         $where = "";
@@ -256,11 +259,12 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 
         return $this->mysql->query($sql);
     }
-	
-	/*
-	 * finds the rows just like the find() method
-	 * and then deletes all of them
-	 */
+
+    /**
+     * finds the rows just like the find() method
+     * and then deletes all of them
+     * @throws DatabaseException
+     */
 	public function delete($json_obj) : MySQLResult{
 		$where = "";
 		
@@ -291,20 +295,23 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
             return $this->mysql->query($sql);
         }
 	}
-	/*
-	 * finds the rows just like the find() method
-	 * and then deletes all of them
-	 */
+
+    /**
+     * finds the rows just like the find() method
+     * and then deletes all of them
+     * @throws DatabaseException
+     */
 	public function truncate() : MySQLResult{
 		$sql = "TRUNCATE `" . addslashes($this->tablename) . "`";
 		return $this->mysql->query($sql);
 	}
-	
-	/**
-	 * will update a row in the database for
-	 * the input object by comparing its value
-	 * for the primary column name
-	 */
+
+    /**
+     * will update a row in the database for
+     * the input object by comparing its value
+     * for the primary column name
+     * @throws DatabaseException
+     */
 	public function update($json_obj) : MySQLResult{
 		$this->validateTableFor($json_obj);
 		$set = "";
@@ -348,12 +355,13 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
             return $this->mysql->query($sql);
         }
 	}
-	
-	/**
-	 * this method will attempt to add a new row
-	 * to the table with all of the values
-	 * of the input json object
-	 */
+
+    /**
+     * this method will attempt to add a new row
+     * to the table with all of the values
+     * of the input json object
+     * @throws DatabaseException
+     */
 	public function insert($json_obj) : MySQLResult{
 		$this->validateTableFor($json_obj);
 		$fields = "";
@@ -395,10 +403,11 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
         }
 	}
 
-	/**
-	 * returns true if the input column name already exists
-	 * in the table, or false otherwise
-	 */
+    /**
+     * returns true if the input column name already exists
+     * in the table, or false otherwise
+     * @throws DatabaseException
+     */
 	protected function columnExistsInTableHuh($columnname) : bool {
 		if(count($this->fields)){
 			foreach($this->fields as $field){
