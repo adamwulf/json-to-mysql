@@ -70,7 +70,8 @@ class ExistingMYSQLTable extends AbstractMysqlTable{
 				
 				if(!$type && !$found){
 					$issues[] = ["column" => $columnname, "error" => "unknown type"];
-					error_log(" - unknown type for column " . $columnname . " when validating table " . $this->name());
+                    /** @noinspection ForgottenDebugOutputInspection */
+                    error_log(" - unknown type for column " . $columnname . " when validating table " . $this->name());
 				}
 				
 				if(!$found){

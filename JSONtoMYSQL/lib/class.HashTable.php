@@ -10,7 +10,8 @@ class HashTable {
 		$this->table = array();
 	}
   
-	function put($key, $obj) {
+	function put($key, $obj): void
+    {
 		$this->table[$key] = $obj;
 	}
 
@@ -22,19 +23,22 @@ class HashTable {
 		}
 	}
 
-	function clear($key){
+	function clear($key): void
+    {
 		if(isset($this->table[$key])){
 			unset($this->table[$key]);
 		}
 	}
 
-	function reset(){
+	function reset(): void
+    {
 		$this->table = array();
 	}
 
 
-	function enum(){
-		$ret = array();
+	function enum(): array
+    {
+		$ret = [];
 		foreach($this->table as $key => $item){
 			$ret[] = $item;
 		}

@@ -13,16 +13,18 @@ class Timer{
 		$this->stop = false;
 	}
 
-	function start(){
+	function start(): void
+    {
 		 $this->start = (float)microtime(true);
 		 $this->stop = false;
 	}
 
-	function stop(){
+	function stop(): void
+    {
 		 $this->stop = (float)microtime(true);
 	}
 
-	function read(){
+	function read() : float{
 		if(is_numeric($this->stop) &&
 		   is_numeric($this->start) &&
 		   ($this->stop > $this->start)){

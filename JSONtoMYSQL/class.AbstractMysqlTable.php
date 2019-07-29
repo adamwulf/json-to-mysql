@@ -36,15 +36,18 @@ abstract class AbstractMysqlTable{
 		$this->locked = JSONTOMYSQL_LOCKED;
 	}
 	
-	public function isLocked(){
+	public function isLocked(): bool
+    {
 		return $this->locked;
 	}
 
-	public function setLocked($lock){
+	public function setLocked(bool $lock): void
+    {
 		$this->locked = $lock;
 	}
 
-	public function name(){
+	public function name(): string
+    {
 		return $this->tablename;
 	}
 
