@@ -62,7 +62,7 @@ class CreateMYSQLTable extends ExistingMYSQLTable{
 			 . "  PRIMARY KEY  (`" . $this->primary . "`)"
 			 . ") ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;";
 		
-		$result = $this->mysql->query($sql);
+		$this->mysql->query($sql);
 	
 		$issues = [];
 		$issues[] = ["notice" => "created table"];
