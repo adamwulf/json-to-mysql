@@ -42,5 +42,7 @@ print_r($obj);
 
 ```
 
+## Support the project
 
+Has json-to-mysql saved you some time? Become a [Github Sponsor](https://github.com/sponsors/adamwulf) and buy me a coffee ☕️ 😄
 
